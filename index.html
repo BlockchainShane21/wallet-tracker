@@ -182,14 +182,10 @@
 const ETHERSCAN_API_KEY = 'K7APU3UTC11ESW8A3FVN9VDGX89AE6I6VS';
 
 async function fetchTransactions(address) {
-  const url = `https://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&page=1&offset=10&sort=desc&apikey=${ETHERSCAN_API_KEY}`;
+  const url = `https://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&page=1&offset=50&sort=desc&apikey=${ETHERSCAN_API_KEY}`;
   const response = await fetch(url);
   const data = await response.json();
-  if(data.status === "1") {
-    return data.result;
-  } else {
-    return [];
-  }
+  return data.status === "1" ? data.result : [];
 }
 
 function shortenAddress(addr) {
@@ -220,7 +216,7 @@ async function trackWallets() {
     try {
       const txs = await fetchTransactions(wallet);
       if(txs.length === 0) {
-        walletDiv.innerHTML += '<p>No recent transactions found.</p>';
+        walletDiv.innerHTML += '<p>This wallet has no recent transactions. It may be inactive or hasn’t been used in a while.</p>';
         continue;
       }
 
